@@ -6,6 +6,7 @@ import Appointment from "./components/services/Appointment";
 import EHealth from "./components/services/EHealth";
 import Medicine from "./components/services/Medicine";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Emergency from "./components/Emergency";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
     path: "/services/Medicine",
     element: <Medicine />,
   },
+  {
+    path: "/emergency",
+    element: <Emergency />,
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
