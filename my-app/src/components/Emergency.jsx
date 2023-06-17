@@ -4,6 +4,9 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import nearestIcon from "./nearest-icon.png";
+import "leaflet-routing-machine";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+
 
 const HospitalDetails = ({ hospital }) => {
   // Render the hospital details component
@@ -103,10 +106,20 @@ const Emergency = () => {
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
-        attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
 
-      L.marker([userLocation.lat, userLocation.lng]).addTo(map);
+      const userIcon = L.icon({
+        iconUrl: require("./user-icon.png"), // Replace with the path to your custom icon image
+        iconSize: [32, 32], // Adjust the size of the icon as needed
+      });
+
+      // Marker for the user's location with custom icon
+      const userMarker = L.marker([userLocation.lat, userLocation.lng], {
+        icon: userIcon,
+      }).addTo(map);
+      // L.marker([userLocation.lat, userLocation.lng]).addTo(map);
 
       if (nearestHospital) {
         const marker = L.marker([nearestHospital.lat, nearestHospital.lon])
@@ -125,6 +138,37 @@ const Emergency = () => {
         marker.on("click", () => {
           handleMarkerClick(nearestHospital);
         });
+
+        const draggableIcon = L.icon({
+          iconUrl: require("./draggable-icon.png"), // Replace with the path to your custom icon image
+          iconSize: [32, 32], // Adjust the size of the icon as needed
+        });
+
+        L.Routing.control({
+          waypoints: [
+            L.latLng(userLocation.lat, userLocation.lng), // User's location
+            L.latLng(nearestHospital.lat, nearestHospital.lon), // Nearest hospital's location
+          ],
+          routeWhileDragging: true,
+          //   createMarker: function (i, waypoint, n) {
+          // // Customize the draggable marker icon
+          //      return L.marker(waypoint.latLng, {
+          //            draggable: true,
+          //        icon: draggableIcon,
+          //        });
+          createMarker: function (i, waypoint, n) {
+            // Customize the draggable marker icon for the source waypoint
+            if (i === 0) {
+              return L.marker(waypoint.latLng, {
+                draggable: true,
+                icon: draggableIcon,
+              });
+            }
+
+            // Use default marker for other waypoints
+            return L.marker(waypoint.latLng);
+          },
+        }).addTo(map);
       }
 
       return () => {
