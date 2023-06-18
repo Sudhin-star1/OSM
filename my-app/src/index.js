@@ -7,6 +7,7 @@ import EHealth from "./components/services/EHealth";
 import Medicine from "./components/services/Medicine";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Emergency from "./components/Emergency";
+import PharmacyMap from "./components/PharmacyMap";
 
 const router = createBrowserRouter([
   {
@@ -30,9 +31,17 @@ const router = createBrowserRouter([
     element: <Medicine />,
   },
   {
+    path: "/services/pharmacy",
+    element: <PharmacyMap />,
+  },
+  {
     path: "/emergency",
     element: <Emergency />,
-  }
+  },
+  // {
+  //   path: "/other",
+  //   element: <Other />,
+  // }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
